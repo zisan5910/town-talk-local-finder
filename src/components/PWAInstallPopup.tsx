@@ -75,13 +75,13 @@ const PWAInstallPopup = () => {
           <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden">
             <img 
               src="https://i.postimg.cc/pTH1nLQb/Picsart-25-07-04-21-11-45-514.png" 
-              alt="Print Poka Logo" 
+              alt="Netlistore Logo" 
               className="w-full h-full object-cover"
             />
           </div>
 
           {/* App Name */}
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Print Poka</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Netlistore</h2>
           <p className="text-gray-600 text-sm mb-6">Install our app for a better shopping experience</p>
 
           {/* Action Buttons */}

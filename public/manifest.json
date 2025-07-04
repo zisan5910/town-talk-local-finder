@@ -1,7 +1,7 @@
 
 {
-  "name": "Print Poka",
-  "short_name": "Print Poka",
+  "name": "Netlistore",
+  "short_name": "Netlistore",
   "description": "Your favorite online shopping app",
   "start_url": "/",
   "display": "standalone",

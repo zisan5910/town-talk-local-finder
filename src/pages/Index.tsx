@@ -1,3 +1,4 @@
+
 import { useState, useMemo, useEffect } from "react";
 import { Heart, Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -1018,7 +1019,7 @@ const Index = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="flex items-center justify-between px-4 py-3">
-          <h1 className="text-xl font-extralight tracking-widest">printpoka</h1>
+          <h1 className="text-xl font-extralight tracking-widest">Netlistore</h1>
           
           <div className="flex items-center gap-1">
             <Button 

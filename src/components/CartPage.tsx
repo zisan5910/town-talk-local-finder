@@ -1,4 +1,5 @@
-import { X, Plus, Minus, ShoppingBag, ArrowRight, Trash2, Search, MessageCircle } from "lucide-react";
+
+import { X, Plus, Minus, ShoppingBag, ArrowRight, Trash2, Heart, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/types/Product";
 import BottomNav from "@/components/BottomNav";
@@ -54,22 +55,20 @@ const CartPage = ({
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-        <div className="flex items-center justify-between p-4">
-          <h3 className="font-light tracking-wide">Cart ({items.length})</h3>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={onSearchClick}>
-              <Search className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={onContactClick}>
-              <MessageCircle className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+        <div className="flex items-center justify-between px-4 py-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-8 w-8"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <h1 className="text-lg font-extralight tracking-wide">Cart</h1>
+          <div className="w-8" />
         </div>
-      </div>
+      </header>
 
       {/* Content */}
       <div className="flex flex-col min-h-screen">
@@ -105,7 +104,7 @@ const CartPage = ({
             {/* Cart Items */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {items.map((item, index) => (
-                <div key={`${item.product.id}-${item.size}-${index}`} className="flex gap-3 group">
+                <div key={`${item.product.id}-${item.size}-${index}`} className="flex gap-3">
                   <div className="w-16 h-20 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
                     <img 
                       src={item.product.image}
@@ -119,40 +118,46 @@ const CartPage = ({
                     <p className="text-xs text-gray-500 mb-1">Size: {item.size}</p>
                     <p className="font-medium text-sm">৳{item.product.price}</p>
                     
-                    <div className="flex items-center gap-3 mt-2">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-7 w-7 rounded-full"
-                          onClick={() => onUpdateQuantity(item.product.id, item.size, item.quantity - 1)}
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="text-sm w-8 text-center">{item.quantity}</span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-7 w-7 rounded-full"
-                          onClick={() => onUpdateQuantity(item.product.id, item.size, item.quantity + 1)}
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
-                      </div>
-                      
+                    <div className="flex items-center gap-2 mt-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-7 w-7 rounded-full"
+                        onClick={() => onUpdateQuantity(item.product.id, item.size, item.quantity - 1)}
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <span className="text-sm w-8 text-center">{item.quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-7 w-7 rounded-full"
+                        onClick={() => onUpdateQuantity(item.product.id, item.size, item.quantity + 1)}
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col items-end justify-between">
+                    <p className="font-medium text-sm">৳{(item.product.price * item.quantity).toFixed(2)}</p>
+                    <div className="flex gap-1">
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="h-7 w-7"
+                      >
+                        <Heart className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
                         onClick={() => onUpdateQuantity(item.product.id, item.size, 0)}
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
-                  </div>
-                  
-                  <div className="text-right">
-                    <p className="font-medium text-sm">৳{(item.product.price * item.quantity).toFixed(2)}</p>
                   </div>
                 </div>
               ))}

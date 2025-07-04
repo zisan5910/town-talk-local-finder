@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { ArrowLeft, Mail, Send, Phone } from "lucide-react";
+import { ArrowLeft, Send, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -84,50 +84,15 @@ const Contact = ({ onBack, onHomeClick, onSearchClick, onCartClick, cartCount }:
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-lg font-extralight tracking-wide">Contact Us</h1>
-          <div className="w-8" /> {/* Spacer */}
+          <h1 className="text-lg font-extralight tracking-wide">Contact</h1>
+          <div className="w-8" />
         </div>
       </header>
 
       {/* Contact Form */}
       <div className="px-4 py-6">
         <div className="max-w-md mx-auto">
-          {/* Contact Info */}
-          <div className="bg-white rounded-lg p-6 mb-6 shadow-sm border border-gray-100">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 bg-black rounded-full flex items-center justify-center">
-                  <Mail className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-900">Email Us</h3>
-                  <p className="text-sm text-gray-600">ridoan.zisan@gmail.com</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 bg-black rounded-full flex items-center justify-center">
-                  <Phone className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-900">Call Us</h3>
-                  <a 
-                    href="tel:+8801712525910" 
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    +880 1712 525910
-                  </a>
-                </div>
-              </div>
-            </div>
-            
-            <p className="text-sm text-gray-600 mt-4">
-              We'd love to hear from you. Send us a message and we'll respond as soon as possible.
-            </p>
-          </div>
-
-          {/* Contact Form */}
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+          <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6">
             <div className="space-y-4">
               <div>
                 <Label htmlFor="name" className="text-sm font-medium text-gray-700">
@@ -197,14 +162,14 @@ const Contact = ({ onBack, onHomeClick, onSearchClick, onCartClick, cartCount }:
             </div>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-xs text-gray-500">
-              {isMobile() 
-                ? "Clicking 'Send Message' will open your default email app with the message pre-filled."
-                : "Clicking 'Send Message' will open Gmail with the message pre-filled. You can review and send it from there."
-              }
-            </p>
-          </div>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => window.open('tel:+8801712525910', '_self')}
+          >
+            <Phone className="h-4 w-4 mr-2" />
+            Call +880 1712 525910
+          </Button>
         </div>
       </div>
 

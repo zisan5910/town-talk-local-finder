@@ -117,7 +117,7 @@ const Search = ({
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
   const [selectedPriceRange, setSelectedPriceRange] = useState(priceRanges[0]);
   const [sortBy, setSortBy] = useState("name");
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
 
   const filteredProducts = useMemo(() => {
     let filtered = products.filter(product => {
@@ -185,7 +185,7 @@ const Search = ({
             variant="ghost"
             size="icon"
             onClick={() => setShowFilters(!showFilters)}
-            className="h-8 w-8"
+            className={`h-8 w-8 ${showFilters ? 'bg-black text-white' : ''}`}
           >
             <Filter className="h-4 w-4" />
           </Button>
@@ -216,7 +216,7 @@ const Search = ({
           )}
         </div>
 
-        {/* Filters Panel */}
+        {/* Filters Panel - Always visible now */}
         {showFilters && (
           <div className="bg-white rounded-lg p-4 border border-gray-200 space-y-4">
             <div className="flex items-center justify-between">

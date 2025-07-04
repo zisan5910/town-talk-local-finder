@@ -1,9 +1,10 @@
 
 import { useState } from "react";
-import { ArrowLeft, Mail, Send } from "lucide-react";
+import { ArrowLeft, Mail, Send, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import BottomNav from "@/components/BottomNav";
 
@@ -31,17 +32,27 @@ const Contact = ({ onBack, onHomeClick, onSearchClick, onCartClick, cartCount }:
     });
   };
 
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Create Gmail compose URL with pre-filled data
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=ridoan.zisan@gmail.com&su=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
-      `Name: ${formData.name}\n\nMessage:\n${formData.message}`
-    )}`;
+    const emailBody = `Name: ${formData.name}\n\nMessage:\n${formData.message}`;
 
-    // Open Gmail in a new tab
-    window.open(gmailUrl, '_blank');
+    if (isMobile()) {
+      const mailtoLink = `mailto:ridoan.zisan@gmail.com?subject=${encodeURIComponent(
+        formData.subject
+      )}&body=${encodeURIComponent(emailBody)}`;
+      window.location.href = mailtoLink;
+    } else {
+      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=ridoan.zisan@gmail.com&su=${encodeURIComponent(
+        formData.subject
+      )}&body=${encodeURIComponent(emailBody)}`;
+      window.open(gmailLink, '_blank');
+    }
 
     // Reset form
     setFormData({
@@ -53,8 +64,10 @@ const Contact = ({ onBack, onHomeClick, onSearchClick, onCartClick, cartCount }:
     setIsSubmitting(false);
     
     toast({
-      title: "Gmail opened successfully!",
-      description: "Please send your message from the opened Gmail compose window.",
+      title: isMobile() ? "Email app opened!" : "Gmail opened successfully!",
+      description: isMobile() 
+        ? "Please send your message from your email app." 
+        : "Please send your message from the opened Gmail compose window.",
     });
   };
 
@@ -81,16 +94,34 @@ const Contact = ({ onBack, onHomeClick, onSearchClick, onCartClick, cartCount }:
         <div className="max-w-md mx-auto">
           {/* Contact Info */}
           <div className="bg-white rounded-lg p-6 mb-6 shadow-sm border border-gray-100">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-10 w-10 bg-black rounded-full flex items-center justify-center">
-                <Mail className="h-5 w-5 text-white" />
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-black rounded-full flex items-center justify-center">
+                  <Mail className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-900">Email Us</h3>
+                  <p className="text-sm text-gray-600">ridoan.zisan@gmail.com</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-medium text-gray-900">Email Us</h3>
-                <p className="text-sm text-gray-600">ridoan.zisan@gmail.com</p>
+              
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-black rounded-full flex items-center justify-center">
+                  <Phone className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-900">Call Us</h3>
+                  <a 
+                    href="tel:+8801712525910" 
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    +880 1712 525910
+                  </a>
+                </div>
               </div>
             </div>
-            <p className="text-sm text-gray-600">
+            
+            <p className="text-sm text-gray-600 mt-4">
               We'd love to hear from you. Send us a message and we'll respond as soon as possible.
             </p>
           </div>
@@ -134,14 +165,14 @@ const Contact = ({ onBack, onHomeClick, onSearchClick, onCartClick, cartCount }:
                 <Label htmlFor="message" className="text-sm font-medium text-gray-700">
                   Message
                 </Label>
-                <textarea
+                <Textarea
                   id="message"
                   name="message"
                   rows={4}
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent resize-none"
+                  className="mt-1 resize-none"
                   placeholder="Tell us more about your inquiry..."
                 />
               </div>
@@ -154,12 +185,12 @@ const Contact = ({ onBack, onHomeClick, onSearchClick, onCartClick, cartCount }:
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                    Opening Gmail...
+                    {isMobile() ? 'Opening Email App...' : 'Opening Gmail...'}
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
                     <Send className="h-4 w-4" />
-                    Send Message via Gmail
+                    Send Message
                   </div>
                 )}
               </Button>
@@ -168,8 +199,10 @@ const Contact = ({ onBack, onHomeClick, onSearchClick, onCartClick, cartCount }:
 
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500">
-              Clicking "Send Message" will open your Gmail with the message pre-filled.
-              You can review and send it from there.
+              {isMobile() 
+                ? "Clicking 'Send Message' will open your default email app with the message pre-filled."
+                : "Clicking 'Send Message' will open Gmail with the message pre-filled. You can review and send it from there."
+              }
             </p>
           </div>
         </div>

@@ -1,4 +1,3 @@
-
 import { useState, useMemo, useEffect } from "react";
 import { Heart, Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -803,12 +802,18 @@ const Index = () => {
 
   const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-  // Ensure product details page starts from the top
+  // Scroll to top when page changes
   useEffect(() => {
-    if (currentPage === "product-detail" && selectedProduct) {
-      window.scrollTo(0, 0);
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage, selectedProduct]);
+
+  // Cache products data for offline use
+  useEffect(() => {
+    if (isOnline) {
+      cacheData('products', mockProducts);
+      cacheData('categories', categoryData);
+    }
+  }, [isOnline, cacheData]);
 
   const navigationHandlers = useMemo(() => ({
     onHomeClick: () => {
@@ -846,8 +851,10 @@ const Index = () => {
       addOfflineAction('add-to-cart', { productId: product.id, size, quantity: 1 });
     }
     
-    setSelectedProduct(null);
-    setCurrentPage("home");
+    if (currentPage === "product-detail") {
+      setSelectedProduct(null);
+      setCurrentPage("home");
+    }
   };
 
   const buyNow = (product: Product, size: string = "Default") => {
@@ -856,9 +863,13 @@ const Index = () => {
     
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(productDetails).catch(() => {
-        // Fallback for browsers that don't support clipboard API
         console.log('Product details:', productDetails);
       });
+    }
+    
+    // Cache the action for offline support
+    if (!isOnline) {
+      addOfflineAction('order-checkout', { productId: product.id, size, price: product.price });
     }
     
     // Open the Google Form URL directly
@@ -873,7 +884,8 @@ const Index = () => {
       
       // Cache the action for offline support
       if (!isOnline) {
-        addOfflineAction('add-to-wishlist', { productId, action: prev.includes(productId) ? 'remove' : 'add' });
+        const action = prev.includes(productId) ? 'remove-from-wishlist' : 'add-to-wishlist';
+        addOfflineAction(action, { productId });
       }
       
       return newWishlist;
@@ -891,7 +903,10 @@ const Index = () => {
   };
 
   const filteredProducts = useMemo(() => {
-    return mockProducts.filter(product => {
+    // Use cached data if offline
+    const products = isOnline ? mockProducts : (getCachedData('products') || mockProducts);
+    
+    return products.filter(product => {
       if (selectedCategory === "All") return true;
       
       const matchesCategory = product.category === selectedCategory;
@@ -902,7 +917,7 @@ const Index = () => {
       
       return matchesCategory;
     });
-  }, [selectedCategory, selectedSubcategory]);
+  }, [selectedCategory, selectedSubcategory, isOnline, getCachedData]);
 
   const wishlistProducts = mockProducts.filter(product => wishlist.includes(product.id));
 
@@ -935,6 +950,7 @@ const Index = () => {
         <OfflineIndicator />
         <CartPage
           items={cartItems}
+          wishlist={wishlist}
           onUpdateQuantity={(productId, size, quantity) => {
             if (quantity === 0) {
               setCartItems(cartItems.filter(item => !(item.product.id === productId && item.size === size)));
@@ -946,6 +962,7 @@ const Index = () => {
               ));
             }
           }}
+          onToggleWishlist={toggleWishlist}
           onClose={() => {
             setCurrentPage("home");
           }}
@@ -1018,7 +1035,7 @@ const Index = () => {
       
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-        <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
           <h1 className="text-xl font-extralight tracking-widest">Netlistore</h1>
           
           <div className="flex items-center gap-1">
@@ -1039,73 +1056,77 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Simple Category Navigation with better mobile scrolling */}
+      {/* Category Navigation */}
       <div className="px-4 py-4 bg-white border-b border-gray-100">
-        <div className="w-full overflow-x-auto">
-          <div className="flex gap-2 pb-2 min-w-max">
-            <Button
-              variant="ghost"
-              onClick={() => handleCategorySelect("All")}
-              className={`px-3 py-2 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:scale-105 flex-shrink-0 ${
-                selectedCategory === "All"
-                  ? "bg-black text-white hover:bg-gray-800 shadow-md"
-                  : "text-gray-700 hover:bg-gray-100 hover:text-black"
-              }`}
-            >
-              All Products
-            </Button>
-            
-            {Object.keys(categoryData).map((category) => (
+        <div className="max-w-7xl mx-auto">
+          <div className="w-full overflow-x-auto">
+            <div className="flex gap-2 pb-2 min-w-max">
               <Button
-                key={category}
                 variant="ghost"
-                onClick={() => handleCategorySelect(category)}
+                onClick={() => handleCategorySelect("All")}
                 className={`px-3 py-2 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:scale-105 flex-shrink-0 ${
-                  selectedCategory === category
+                  selectedCategory === "All"
                     ? "bg-black text-white hover:bg-gray-800 shadow-md"
                     : "text-gray-700 hover:bg-gray-100 hover:text-black"
                 }`}
               >
-                {category}
+                All Products
               </Button>
-            ))}
+              
+              {Object.keys(categoryData).map((category) => (
+                <Button
+                  key={category}
+                  variant="ghost"
+                  onClick={() => handleCategorySelect(category)}
+                  className={`px-3 py-2 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:scale-105 flex-shrink-0 ${
+                    selectedCategory === category
+                      ? "bg-black text-white hover:bg-gray-800 shadow-md"
+                      : "text-gray-700 hover:bg-gray-100 hover:text-black"
+                  }`}
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Products Section */}
       <section className="px-4 py-4">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-medium">
-              {selectedCategory === "All" ? "All Products" : selectedCategory}
-            </h2>
-            {selectedSubcategory && (
-              <p className="text-sm text-gray-600 mt-1">{selectedSubcategory}</p>
-            )}
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-lg font-medium">
+                {selectedCategory === "All" ? "All Products" : selectedCategory}
+              </h2>
+              {selectedSubcategory && (
+                <p className="text-sm text-gray-600 mt-1">{selectedSubcategory}</p>
+              )}
+            </div>
+            <span className="text-sm text-gray-500">{filteredProducts.length} items</span>
           </div>
-          <span className="text-sm text-gray-500">{filteredProducts.length} items</span>
+          
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black"></div>
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <h3 className="text-lg font-medium mb-2">No products found</h3>
+              <p className="text-gray-500">Try selecting a different category or subcategory</p>
+            </div>
+          ) : (
+            <ProductGrid 
+              products={filteredProducts}
+              wishlist={wishlist}
+              onProductClick={handleProductClick}
+              onToggleWishlist={toggleWishlist}
+              onAddToCart={addToCart}
+              onBuyNow={buyNow}
+            />
+          )}
         </div>
-        
-        {isLoading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black"></div>
-          </div>
-        ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium mb-2">No products found</h3>
-            <p className="text-gray-500">Try selecting a different category or subcategory</p>
-          </div>
-        ) : (
-          <ProductGrid 
-            products={filteredProducts}
-            wishlist={wishlist}
-            onProductClick={handleProductClick}
-            onToggleWishlist={toggleWishlist}
-            onAddToCart={addToCart}
-            onBuyNow={buyNow}
-          />
-        )}
       </section>
 
       {/* Bottom Navigation */}

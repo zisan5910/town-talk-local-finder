@@ -12,7 +12,9 @@ interface CartItem {
 
 interface CartPageProps {
   items: CartItem[];
+  wishlist: number[];
   onUpdateQuantity: (productId: number, size: string, quantity: number) => void;
+  onToggleWishlist: (productId: number) => void;
   onClose: () => void;
   onHomeClick: () => void;
   onSearchClick: () => void;
@@ -22,7 +24,9 @@ interface CartPageProps {
 
 const CartPage = ({ 
   items, 
+  wishlist,
   onUpdateQuantity, 
+  onToggleWishlist,
   onClose, 
   onHomeClick, 
   onSearchClick, 
@@ -53,7 +57,7 @@ const CartPage = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="flex items-center justify-between px-4 py-3">
@@ -70,8 +74,8 @@ const CartPage = ({
         </div>
       </header>
 
-      {/* Content */}
-      <div className="flex flex-col min-h-screen">
+      {/* Content Area - Flex-1 to push footer down */}
+      <div className="flex-1 flex flex-col">
         {items.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
             <ShoppingBag className="h-16 w-16 text-gray-200 mb-4" />
@@ -88,7 +92,7 @@ const CartPage = ({
           <>
             {/* Free Shipping Banner */}
             {total < 200 && (
-              <div className="bg-gray-50 p-3 text-center text-sm">
+              <div className="bg-gray-50 p-3 text-center text-sm border-b">
                 <span className="text-gray-600">
                   Add ৳{(200 - total).toFixed(2)} more for free shipping
                 </span>
@@ -101,15 +105,16 @@ const CartPage = ({
               </div>
             )}
 
-            {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Scrollable Cart Items */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-4">
               {items.map((item, index) => (
-                <div key={`${item.product.id}-${item.size}-${index}`} className="flex gap-3">
+                <div key={`${item.product.id}-${item.size}-${index}`} className="flex gap-3 bg-white p-3 rounded-lg border border-gray-100">
                   <div className="w-16 h-20 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
                     <img 
                       src={item.product.image}
                       alt={item.product.name}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </div>
                   
@@ -145,14 +150,21 @@ const CartPage = ({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className={`h-7 w-7 ${
+                          wishlist.includes(item.product.id)
+                            ? "text-red-500"
+                            : "text-gray-400 hover:text-red-500"
+                        }`}
+                        onClick={() => onToggleWishlist(item.product.id)}
                       >
-                        <Heart className="h-3 w-3" />
+                        <Heart className={`h-3 w-3 ${
+                          wishlist.includes(item.product.id) ? "fill-current" : ""
+                        }`} />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-7 w-7 text-gray-400 hover:text-red-500"
                         onClick={() => onUpdateQuantity(item.product.id, item.size, 0)}
                       >
                         <Trash2 className="h-3 w-3" />
@@ -162,43 +174,45 @@ const CartPage = ({
                 </div>
               ))}
             </div>
-
-            {/* Footer */}
-            <div className="border-t border-gray-50 p-4 space-y-4 bg-white">
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span>৳{total.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span>{shipping === 0 ? "Free" : `৳${shipping.toFixed(2)}`}</span>
-                </div>
-                <div className="flex justify-between font-medium text-base pt-2 border-t">
-                  <span>Total</span>
-                  <span>৳{finalTotal.toFixed(2)}</span>
-                </div>
-              </div>
-              
-              <Button 
-                className="w-full bg-black text-white hover:bg-gray-800 rounded-full"
-                onClick={handleCheckout}
-              >
-                Checkout
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-              
-              <Button variant="outline" className="w-full rounded-full" onClick={onClose}>
-                Continue Shopping
-              </Button>
-              
-              <p className="text-xs text-gray-500 text-center">
-                Secure checkout via Google Forms
-              </p>
-            </div>
           </>
         )}
       </div>
+
+      {/* Sticky Footer - Only show when cart has items */}
+      {items.length > 0 && (
+        <div className="sticky bottom-20 bg-white border-t border-gray-200 p-4 space-y-4 shadow-lg">
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span>৳{total.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Shipping</span>
+              <span>{shipping === 0 ? "Free" : `৳${shipping.toFixed(2)}`}</span>
+            </div>
+            <div className="flex justify-between font-medium text-base pt-2 border-t">
+              <span>Total</span>
+              <span>৳{finalTotal.toFixed(2)}</span>
+            </div>
+          </div>
+          
+          <Button 
+            className="w-full bg-black text-white hover:bg-gray-800 rounded-full"
+            onClick={handleCheckout}
+          >
+            Checkout
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+          
+          <Button variant="outline" className="w-full rounded-full" onClick={onClose}>
+            Continue Shopping
+          </Button>
+          
+          <p className="text-xs text-gray-500 text-center">
+            Secure checkout via Google Forms
+          </p>
+        </div>
+      )}
 
       {/* Bottom Navigation */}
       <BottomNav 

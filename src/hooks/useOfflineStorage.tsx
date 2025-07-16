@@ -14,18 +14,24 @@ export const useOfflineStorage = () => {
 
   useEffect(() => {
     // Load offline actions from localStorage
-    const storedActions = localStorage.getItem('offline-actions');
-    if (storedActions) {
-      setOfflineActions(JSON.parse(storedActions));
+    try {
+      const storedActions = localStorage.getItem('offline-actions');
+      if (storedActions) {
+        setOfflineActions(JSON.parse(storedActions));
+      }
+    } catch (error) {
+      console.error('Failed to load offline actions:', error);
     }
 
     const handleOnline = () => {
+      console.log('App is back online');
       setIsOnline(true);
       // Process offline actions when back online
       processOfflineActions();
     };
 
     const handleOffline = () => {
+      console.log('App is offline');
       setIsOnline(false);
     };
 
@@ -46,13 +52,21 @@ export const useOfflineStorage = () => {
       timestamp: Date.now()
     };
 
-    const updatedActions = [...offlineActions, action];
-    setOfflineActions(updatedActions);
-    localStorage.setItem('offline-actions', JSON.stringify(updatedActions));
-  }, [offlineActions]);
+    setOfflineActions(prev => {
+      const updatedActions = [...prev, action];
+      try {
+        localStorage.setItem('offline-actions', JSON.stringify(updatedActions));
+      } catch (error) {
+        console.error('Failed to save offline action:', error);
+      }
+      return updatedActions;
+    });
+  }, []);
 
   const processOfflineActions = useCallback(async () => {
     if (offlineActions.length === 0) return;
+
+    console.log('Processing offline actions:', offlineActions.length);
 
     // Process each offline action
     for (const action of offlineActions) {
@@ -60,12 +74,14 @@ export const useOfflineStorage = () => {
         // Handle different types of offline actions
         switch (action.type) {
           case 'add-to-cart':
-            // Sync cart additions
             console.log('Syncing cart addition:', action.data);
             break;
           case 'add-to-wishlist':
-            // Sync wishlist additions
-            console.log('Syncing wishlist addition:', action.data);
+          case 'remove-from-wishlist':
+            console.log('Syncing wishlist action:', action.data);
+            break;
+          case 'order-checkout':
+            console.log('Syncing checkout:', action.data);
             break;
           default:
             console.log('Unknown offline action:', action.type);
@@ -77,25 +93,50 @@ export const useOfflineStorage = () => {
 
     // Clear processed actions
     setOfflineActions([]);
-    localStorage.removeItem('offline-actions');
+    try {
+      localStorage.removeItem('offline-actions');
+    } catch (error) {
+      console.error('Failed to clear offline actions:', error);
+    }
   }, [offlineActions]);
 
   const cacheData = useCallback((key: string, data: any) => {
-    localStorage.setItem(`cache-${key}`, JSON.stringify({
-      data,
-      timestamp: Date.now()
-    }));
+    try {
+      localStorage.setItem(`cache-${key}`, JSON.stringify({
+        data,
+        timestamp: Date.now()
+      }));
+    } catch (error) {
+      console.error('Failed to cache data:', error);
+    }
   }, []);
 
   const getCachedData = useCallback((key: string, maxAge: number = 3600000) => {
-    const cached = localStorage.getItem(`cache-${key}`);
-    if (cached) {
-      const { data, timestamp } = JSON.parse(cached);
-      if (Date.now() - timestamp < maxAge) {
-        return data;
+    try {
+      const cached = localStorage.getItem(`cache-${key}`);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < maxAge) {
+          return data;
+        }
       }
+    } catch (error) {
+      console.error('Failed to get cached data:', error);
     }
     return null;
+  }, []);
+
+  const clearCache = useCallback(() => {
+    try {
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith('cache-')) {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch (error) {
+      console.error('Failed to clear cache:', error);
+    }
   }, []);
 
   return {
@@ -103,6 +144,7 @@ export const useOfflineStorage = () => {
     addOfflineAction,
     cacheData,
     getCachedData,
+    clearCache,
     offlineActions: offlineActions.length
   };
 };

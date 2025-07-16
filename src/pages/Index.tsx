@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Product } from "@/types/Product";
 import { Toaster, toast } from "sonner";
@@ -7,8 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import ProductGrid from "@/components/ProductGrid";
 import ProductModal from "@/components/ProductModal";
 import ProductDetailPage from "@/components/ProductDetailPage";
-import Search from "@/components/Search";
-import Contact from "@/components/Contact";
+import Search from "@/pages/Search";
+import Contact from "@/pages/Contact";
 import CartPage from "@/components/CartPage";
 import WishlistPage from "@/components/WishlistPage";
 import BottomNav from "@/components/BottomNav";
@@ -43,8 +44,8 @@ const Index = () => {
         const data = await response.json();
         setProducts(data);
 
-				// Extract categories
-				const uniqueCategories = [...new Set(data.map((product: Product) => product.category))];
+				// Extract categories with proper type casting
+				const uniqueCategories = [...new Set(data.map((product: Product) => product.category))] as string[];
 				setCategories(uniqueCategories);
       } catch (error) {
         console.error("Could not fetch products:", error);
@@ -161,6 +162,7 @@ const Index = () => {
   };
 
   const handleProductClick = (product: Product) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     setSelectedProduct(product);
     setCurrentPage("product");
   };
@@ -226,10 +228,17 @@ const Index = () => {
         return selectedProduct ? (
           <ProductDetailPage
             product={selectedProduct}
+            allProducts={products}
             wishlist={wishlist}
             onToggleWishlist={handleToggleWishlist}
             onAddToCart={handleAddToCart}
             onBack={handleHomeClick}
+            onProductClick={handleProductClick}
+            onHomeClick={handleHomeClick}
+            onSearchClick={handleSearchClick}
+            onCartClick={handleCartClick}
+            onContactClick={handleContactClick}
+            cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
           />
         ) : null;
       default:
@@ -239,7 +248,7 @@ const Index = () => {
             <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
               <div className="flex items-center justify-between px-4 py-3">
                 <h1 className="text-lg font-extralight tracking-wide">
-                  E-commerce App
+                  Netlistore
                 </h1>
                 <div className="flex items-center space-x-2">
                   <Button variant="outline" size="sm" onClick={handleWishlistClick}>

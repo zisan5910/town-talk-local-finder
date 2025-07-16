@@ -1,4 +1,3 @@
-
 import { Heart, ShoppingBag, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/types/Product";
@@ -36,7 +35,7 @@ const ProductGrid = ({ products, wishlist, onProductClick, onToggleWishlist, onA
   };
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 max-w-sm sm:max-w-none mx-auto">
+    <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
       {products.map((product) => (
         <div 
           key={product.id}
@@ -48,7 +47,6 @@ const ProductGrid = ({ products, wishlist, onProductClick, onToggleWishlist, onA
               src={product.image}
               alt={product.name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
             />
             {!product.inStock && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">

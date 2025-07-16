@@ -1018,19 +1018,19 @@ const Index = () => {
       
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-        <div className="flex items-center justify-between px-4 py-3">
-          <h1 className="text-xl font-extralight tracking-widest">Netlistore</h1>
+        <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
+          <h1 className="text-xl sm:text-2xl font-extralight tracking-widest">Netlistore</h1>
           
           <div className="flex items-center gap-1">
             <Button 
               variant="ghost" 
               size="icon" 
-              className="relative hover:bg-gray-50 h-8 w-8"
+              className="relative hover:bg-gray-50 h-8 w-8 sm:h-10 sm:w-10"
               onClick={() => setIsWishlistOpen(true)}
             >
-              <Heart className="h-4 w-4" />
+              <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
               {wishlist.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]">
+                <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-[10px] sm:text-xs">
                   {wishlist.length}
                 </span>
               )}
@@ -1039,10 +1039,10 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Simple Category Navigation with better mobile scrolling */}
-      <div className="px-4 py-4 bg-white border-b border-gray-100">
+      {/* Simple Category Navigation with better responsive scrolling */}
+      <div className="px-4 sm:px-6 lg:px-8 py-4 bg-white border-b border-gray-100">
         <div className="w-full overflow-x-auto">
-          <div className="flex gap-2 pb-2 min-w-max">
+          <div className="flex gap-2 pb-2 min-w-max sm:min-w-0 sm:flex-wrap">
             <Button
               variant="ghost"
               onClick={() => handleCategorySelect("All")}
@@ -1074,10 +1074,10 @@ const Index = () => {
       </div>
 
       {/* Products Section */}
-      <section className="px-4 py-4">
+      <section className="px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-medium">
+            <h2 className="text-lg sm:text-xl font-medium">
               {selectedCategory === "All" ? "All Products" : selectedCategory}
             </h2>
             {selectedSubcategory && (

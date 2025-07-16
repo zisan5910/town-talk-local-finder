@@ -45,12 +45,9 @@ export const useOfflineStorage = () => {
     window.addEventListener('offline', handleOffline);
 
     // Register for background sync if supported
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
       navigator.serviceWorker.ready.then(registration => {
-        // Check if sync is supported
-        if ('sync' in registration) {
-          return (registration as any).sync.register('background-sync');
-        }
+        return registration.sync.register('background-sync');
       }).catch(err => console.log('Background sync registration failed:', err));
     }
 

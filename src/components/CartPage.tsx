@@ -56,6 +56,41 @@ const CartPage = ({
     window.open("https://forms.gle/pCunH9M1Z3ez9VnU9", "_blank");
   };
 
+  const CheckoutSection = () => (
+    <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-4 shadow-sm">
+      <div className="space-y-2 text-sm">
+        <div className="flex justify-between">
+          <span>Subtotal</span>
+          <span>৳{total.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Shipping</span>
+          <span>{shipping === 0 ? "Free" : `৳${shipping.toFixed(2)}`}</span>
+        </div>
+        <div className="flex justify-between font-medium text-base pt-2 border-t">
+          <span>Total</span>
+          <span>৳{finalTotal.toFixed(2)}</span>
+        </div>
+      </div>
+      
+      <Button 
+        className="w-full bg-black text-white hover:bg-gray-800 rounded-full"
+        onClick={handleCheckout}
+      >
+        Checkout
+        <ArrowRight className="w-4 h-4 ml-2" />
+      </Button>
+      
+      <Button variant="outline" className="w-full rounded-full" onClick={onClose}>
+        Continue Shopping
+      </Button>
+      
+      <p className="text-xs text-gray-500 text-center">
+        Secure checkout via Google Forms
+      </p>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
@@ -74,22 +109,32 @@ const CartPage = ({
         </div>
       </header>
 
-      {/* Content Area - Flex-1 to push footer down */}
-      <div className="flex-1 flex flex-col">
+      {/* Content Area */}
+      <div className="flex-1 flex flex-col pb-20">
         {items.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-            <ShoppingBag className="h-16 w-16 text-gray-200 mb-4" />
-            <h4 className="text-lg font-light mb-2">Your cart is empty</h4>
-            <p className="text-gray-500 text-sm mb-6">Discover our beautiful products</p>
-            <Button 
-              onClick={onClose}
-              className="bg-black text-white hover:bg-gray-800 rounded-full px-8"
-            >
-              Start Shopping
-            </Button>
-          </div>
-        ) : (
           <>
+            {/* Empty cart content */}
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+              <ShoppingBag className="h-16 w-16 text-gray-200 mb-4" />
+              <h4 className="text-lg font-light mb-2">Your cart is empty</h4>
+              <p className="text-gray-500 text-sm mb-6">Discover our beautiful products</p>
+              <Button 
+                onClick={onClose}
+                className="bg-black text-white hover:bg-gray-800 rounded-full px-8"
+              >
+                Start Shopping
+              </Button>
+            </div>
+            
+            {/* Checkout section for empty cart - positioned above bottom nav */}
+            <div className="fixed bottom-20 left-0 right-0 p-4 bg-gray-50">
+              <div className="max-w-md mx-auto">
+                <CheckoutSection />
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="overflow-y-auto">
             {/* Free Shipping Banner */}
             {total < 200 && (
               <div className="bg-gray-50 p-3 text-center text-sm border-b">
@@ -105,8 +150,8 @@ const CartPage = ({
               </div>
             )}
 
-            {/* Scrollable Cart Items */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-4">
+            {/* Cart Items */}
+            <div className="p-4 space-y-4">
               {items.map((item, index) => (
                 <div key={`${item.product.id}-${item.size}-${index}`} className="flex gap-3 bg-white p-3 rounded-lg border border-gray-100">
                   <div className="w-16 h-20 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
@@ -173,46 +218,15 @@ const CartPage = ({
                   </div>
                 </div>
               ))}
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* Sticky Footer - Only show when cart has items */}
-      {items.length > 0 && (
-        <div className="sticky bottom-20 bg-white border-t border-gray-200 p-4 space-y-4 shadow-lg">
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>৳{total.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Shipping</span>
-              <span>{shipping === 0 ? "Free" : `৳${shipping.toFixed(2)}`}</span>
-            </div>
-            <div className="flex justify-between font-medium text-base pt-2 border-t">
-              <span>Total</span>
-              <span>৳{finalTotal.toFixed(2)}</span>
+              
+              {/* Checkout Section - scrolls with products when cart has items */}
+              <div className="mt-6">
+                <CheckoutSection />
+              </div>
             </div>
           </div>
-          
-          <Button 
-            className="w-full bg-black text-white hover:bg-gray-800 rounded-full"
-            onClick={handleCheckout}
-          >
-            Checkout
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-          
-          <Button variant="outline" className="w-full rounded-full" onClick={onClose}>
-            Continue Shopping
-          </Button>
-          
-          <p className="text-xs text-gray-500 text-center">
-            Secure checkout via Google Forms
-          </p>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Bottom Navigation */}
       <BottomNav 

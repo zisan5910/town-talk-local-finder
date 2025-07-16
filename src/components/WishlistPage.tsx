@@ -2,6 +2,7 @@
 import { ArrowLeft, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductGrid from "@/components/ProductGrid";
+import BottomNav from "@/components/BottomNav";
 import { Product } from "@/types/Product";
 
 interface WishlistPageProps {
@@ -11,11 +12,28 @@ interface WishlistPageProps {
   onToggleWishlist: (productId: number) => void;
   onAddToCart: (product: Product, size: string) => void;
   onBack: () => void;
+  onHomeClick: () => void;
+  onSearchClick: () => void;
+  onCartClick: () => void;
+  onContactClick: () => void;
+  cartCount: number;
 }
 
-const WishlistPage = ({ products, wishlist, onProductClick, onToggleWishlist, onAddToCart, onBack }: WishlistPageProps) => {
+const WishlistPage = ({ 
+  products, 
+  wishlist, 
+  onProductClick, 
+  onToggleWishlist, 
+  onAddToCart, 
+  onBack,
+  onHomeClick,
+  onSearchClick,
+  onCartClick,
+  onContactClick,
+  cartCount
+}: WishlistPageProps) => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="flex items-center justify-between px-4 py-3">
@@ -35,7 +53,7 @@ const WishlistPage = ({ products, wishlist, onProductClick, onToggleWishlist, on
       </header>
 
       {/* Content */}
-      <div className="px-4 py-6">
+      <div className="flex-1 px-4 py-6 pb-20">
         {products.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Heart className="h-16 w-16 text-gray-200 mb-4" />
@@ -58,6 +76,16 @@ const WishlistPage = ({ products, wishlist, onProductClick, onToggleWishlist, on
           />
         )}
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNav 
+        cartCount={cartCount}
+        onHomeClick={onHomeClick}
+        onSearchClick={onSearchClick}
+        onCartClick={onCartClick}
+        onContactClick={onContactClick}
+        activeTab="home"
+      />
     </div>
   );
 };

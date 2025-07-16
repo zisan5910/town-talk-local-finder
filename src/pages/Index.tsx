@@ -190,15 +190,28 @@ const Index = () => {
       case "search":
         return (
           <Search
+            products={filteredProducts}
             onBack={handleHomeClick}
             onAddToCart={handleAddToCart}
             wishlist={wishlist}
             onToggleWishlist={handleToggleWishlist}
             onProductClick={handleProductClick}
+            onHomeClick={handleHomeClick}
+            onCartClick={handleCartClick}
+            onContactClick={handleContactClick}
+            cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
           />
         );
       case "contact":
-        return <Contact onBack={handleHomeClick} />;
+        return (
+          <Contact
+            onBack={handleHomeClick}
+            onHomeClick={handleHomeClick}
+            onSearchClick={handleSearchClick}
+            onCartClick={handleCartClick}
+            cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+          />
+        );
       case "cart":
         return (
           <CartPage
@@ -337,6 +350,7 @@ const Index = () => {
         onToggleWishlist={handleToggleWishlist}
         onAddToCart={handleAddToCart}
       />
+      <Toaster />
     </>
   );
 };

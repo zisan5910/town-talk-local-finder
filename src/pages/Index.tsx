@@ -9,11 +9,9 @@ import CartPage from "@/components/CartPage";
 import BottomNav from "@/components/BottomNav";
 import Contact from "@/pages/Contact";
 import Search from "@/pages/Search";
-import OfflineIndicator from "@/components/OfflineIndicator";
 import CategoryDropdown from "@/components/CategoryDropdown";
 import { Product } from "@/types/Product";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { useOfflineStorage } from "@/hooks/useOfflineStorage";
 import PWAInstallPopup from "@/components/PWAInstallPopup";
 
 const mockProducts: Product[] = [
@@ -797,8 +795,6 @@ const Index = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Use offline storage hook
-  const { isOnline, addOfflineAction, cacheData, getCachedData } = useOfflineStorage();
 
   const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
@@ -868,10 +864,6 @@ const Index = () => {
       setCartItems([...cartItems, { product, size, quantity: 1 }]);
     }
 
-    // Cache the action for offline support
-    if (!isOnline) {
-      addOfflineAction('add-to-cart', { productId: product.id, size, quantity: 1 });
-    }
     
     setSelectedProduct(null);
     setCurrentPage("home");
@@ -898,10 +890,6 @@ const Index = () => {
         ? prev.filter(id => id !== productId)
         : [...prev, productId];
       
-      // Cache the action for offline support
-      if (!isOnline) {
-        addOfflineAction('add-to-wishlist', { productId, action: prev.includes(productId) ? 'remove' : 'add' });
-      }
       
       return newWishlist;
     });
@@ -936,7 +924,6 @@ const Index = () => {
   if (currentPage === "product-detail" && selectedProduct) {
     return (
       <div>
-        <OfflineIndicator />
         <ProductDetailPage
           product={selectedProduct}
           allProducts={mockProducts}
@@ -959,7 +946,6 @@ const Index = () => {
   if (currentPage === "cart") {
     return (
       <div>
-        <OfflineIndicator />
         <CartPage
           items={cartItems}
           wishlist={wishlist}
@@ -990,8 +976,7 @@ const Index = () => {
   if (currentPage === "contact") {
     return (
       <div>
-        <OfflineIndicator />
-        <Contact 
+        <Contact
           onBack={() => setCurrentPage("home")}
           onHomeClick={navigationHandlers.onHomeClick}
           onSearchClick={navigationHandlers.onSearchClick}
@@ -1005,7 +990,6 @@ const Index = () => {
   if (currentPage === "search") {
     return (
       <div>
-        <OfflineIndicator />
         <Search
           products={mockProducts}
           wishlist={wishlist}
@@ -1025,7 +1009,6 @@ const Index = () => {
   if (isWishlistOpen) {
     return (
       <div>
-        <OfflineIndicator />
         <WishlistPage
           products={wishlistProducts}
           wishlist={wishlist}
@@ -1045,7 +1028,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <OfflineIndicator />
       
       {/* PWA Install Popup */}
       <PWAInstallPopup />

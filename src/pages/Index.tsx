@@ -952,6 +952,7 @@ const Index = () => {
           product={selectedProduct}
           allProducts={mockProducts}
           wishlist={wishlist}
+          cartItems={cartItems}
           onBack={() => setCurrentPage("home")}
           onAddToCart={addToCart}
           onBuyNow={buyNow}
@@ -1017,6 +1018,7 @@ const Index = () => {
         <Search
           products={mockProducts}
           wishlist={wishlist}
+          cartItems={cartItems}
           onBack={() => setCurrentPage("home")}
           onProductClick={handleProductClick}
           onToggleWishlist={toggleWishlist}
@@ -1036,6 +1038,7 @@ const Index = () => {
         <WishlistPage
           products={wishlistProducts}
           wishlist={wishlist}
+          cartItems={cartItems}
           onProductClick={handleProductClick}
           onToggleWishlist={toggleWishlist}
           onAddToCart={addToCart}

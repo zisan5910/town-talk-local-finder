@@ -952,7 +952,6 @@ const Index = () => {
           product={selectedProduct}
           allProducts={mockProducts}
           wishlist={wishlist}
-          cartItems={cartItems}
           onBack={() => setCurrentPage("home")}
           onAddToCart={addToCart}
           onBuyNow={buyNow}
@@ -1018,7 +1017,6 @@ const Index = () => {
         <Search
           products={mockProducts}
           wishlist={wishlist}
-          cartItems={cartItems}
           onBack={() => setCurrentPage("home")}
           onProductClick={handleProductClick}
           onToggleWishlist={toggleWishlist}
@@ -1038,7 +1036,6 @@ const Index = () => {
         <WishlistPage
           products={wishlistProducts}
           wishlist={wishlist}
-          cartItems={cartItems}
           onProductClick={handleProductClick}
           onToggleWishlist={toggleWishlist}
           onAddToCart={addToCart}
@@ -1106,7 +1103,7 @@ const Index = () => {
               onClick={() => handleCategorySelect("All")}
               className={`px-4 py-2 text-sm font-medium whitespace-nowrap transition-all duration-200 rounded-full border flex-shrink-0 ${
                 selectedCategory === "All"
-                  ? "bg-black text-white border-black shadow-md hover:bg-gray-800"
+                  ? "bg-foreground text-background border-foreground shadow-md hover:bg-foreground/90"
                   : "bg-background text-foreground border-border hover:border-foreground hover:bg-accent hover:text-accent-foreground"
               }`}
             >
@@ -1120,7 +1117,7 @@ const Index = () => {
                 onClick={() => handleCategorySelect(category)}
                 className={`px-4 py-2 text-sm font-medium whitespace-nowrap transition-all duration-200 rounded-full border flex-shrink-0 ${
                   selectedCategory === category
-                    ? "bg-black text-white border-black shadow-md hover:bg-gray-800"
+                    ? "bg-foreground text-background border-foreground shadow-md hover:bg-foreground/90"
                     : "bg-background text-foreground border-border hover:border-foreground hover:bg-accent hover:text-accent-foreground"
                 }`}
               >
@@ -1159,7 +1156,6 @@ const Index = () => {
             <ProductGrid 
               products={filteredProducts}
               wishlist={wishlist}
-              cartItems={cartItems}
               onProductClick={handleProductClick}
               onToggleWishlist={toggleWishlist}
               onAddToCart={addToCart}

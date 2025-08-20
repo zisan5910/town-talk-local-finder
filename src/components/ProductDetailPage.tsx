@@ -10,7 +10,6 @@ interface ProductDetailPageProps {
   product: Product;
   allProducts: Product[];
   wishlist: number[];
-  cartItems: Array<{ product: Product; size: string; quantity: number }>;
   onBack: () => void;
   onAddToCart: (product: Product, size: string) => void;
   onBuyNow?: (product: Product, size: string) => void;
@@ -27,7 +26,6 @@ const ProductDetailPage = ({
   product, 
   allProducts, 
   wishlist, 
-  cartItems,
   onBack, 
   onAddToCart,
   onBuyNow,
@@ -203,7 +201,6 @@ const ProductDetailPage = ({
           <ProductGrid 
             products={suggestedProducts}
             wishlist={wishlist}
-            cartItems={cartItems}
             onProductClick={onProductClick}
             onToggleWishlist={onToggleWishlist}
             onAddToCart={onAddToCart}

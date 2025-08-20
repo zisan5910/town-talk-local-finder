@@ -6,14 +6,13 @@ import { Product } from "@/types/Product";
 interface ProductGridProps {
   products: Product[];
   wishlist: number[];
-  cartItems: Array<{ product: Product; size: string; quantity: number }>;
   onProductClick: (product: Product) => void;
   onToggleWishlist: (productId: number) => void;
   onAddToCart: (product: Product, size: string) => void;
   onBuyNow?: (product: Product, size: string) => void;
 }
 
-const ProductGrid = ({ products, wishlist, cartItems, onProductClick, onToggleWishlist, onAddToCart, onBuyNow }: ProductGridProps) => {
+const ProductGrid = ({ products, wishlist, onProductClick, onToggleWishlist, onAddToCart, onBuyNow }: ProductGridProps) => {
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
     onAddToCart(product, product.sizes ? product.sizes[0] : "Default");
@@ -34,10 +33,6 @@ const ProductGrid = ({ products, wishlist, cartItems, onProductClick, onToggleWi
     
     // Open the Google Form URL directly
     window.open("https://forms.gle/pCunH9M1Z3ez9VnU9", "_blank");
-  };
-
-  const isProductInCart = (productId: number) => {
-    return cartItems.some(item => item.product.id === productId);
   };
 
   return (
@@ -61,22 +56,16 @@ const ProductGrid = ({ products, wishlist, cartItems, onProductClick, onToggleWi
               </div>
             )}
             
-            {/* Cart Icon with status indicator */}
+            {/* Cart Icon */}
             <div className="absolute top-2 left-2 z-10">
               <Button
                 variant="ghost"
                 size="icon"
                 disabled={!product.inStock}
-                className={`h-7 w-7 shadow-sm backdrop-blur-sm rounded-full border ${
-                  isProductInCart(product.id)
-                    ? "bg-black hover:bg-gray-800 border-black"
-                    : "bg-white/90 hover:bg-white border-gray-200"
-                }`}
+                className="h-7 w-7 shadow-sm backdrop-blur-sm rounded-full border bg-white/90 hover:bg-white border-gray-200"
                 onClick={(e) => handleAddToCart(e, product)}
               >
-                <ShoppingBag className={`h-3.5 w-3.5 ${
-                  isProductInCart(product.id) ? "text-white" : "text-gray-700"
-                }`} />
+                <ShoppingBag className="h-3.5 w-3.5 text-gray-700" />
               </Button>
             </div>
             

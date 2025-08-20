@@ -8,7 +8,6 @@ import { Product } from "@/types/Product";
 interface WishlistPageProps {
   products: Product[];
   wishlist: number[];
-  cartItems: Array<{ product: Product; size: string; quantity: number }>;
   onProductClick: (product: Product) => void;
   onToggleWishlist: (productId: number) => void;
   onAddToCart: (product: Product, size: string) => void;
@@ -23,7 +22,6 @@ interface WishlistPageProps {
 const WishlistPage = ({ 
   products, 
   wishlist, 
-  cartItems,
   onProductClick, 
   onToggleWishlist, 
   onAddToCart, 
@@ -77,7 +75,6 @@ const WishlistPage = ({
           <ProductGrid 
             products={products}
             wishlist={wishlist}
-            cartItems={cartItems}
             onProductClick={onProductClick}
             onToggleWishlist={onToggleWishlist}
             onAddToCart={onAddToCart}

@@ -10,7 +10,6 @@ import { Product } from "@/types/Product";
 interface SearchProps {
   products: Product[];
   wishlist: number[];
-  cartItems: Array<{ product: Product; size: string; quantity: number }>;
   onBack: () => void;
   onProductClick: (product: Product) => void;
   onToggleWishlist: (productId: number) => void;
@@ -104,7 +103,6 @@ const priceRanges = [
 const Search = ({ 
   products, 
   wishlist, 
-  cartItems,
   onBack, 
   onProductClick, 
   onToggleWishlist,
@@ -395,7 +393,6 @@ const Search = ({
           <ProductGrid 
             products={filteredProducts}
             wishlist={wishlist}
-            cartItems={cartItems}
             onProductClick={onProductClick}
             onToggleWishlist={onToggleWishlist}
             onAddToCart={onAddToCart}

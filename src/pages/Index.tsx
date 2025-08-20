@@ -1103,7 +1103,7 @@ const Index = () => {
               onClick={() => handleCategorySelect("All")}
               className={`px-4 py-2 text-sm font-medium whitespace-nowrap transition-all duration-200 rounded-full border flex-shrink-0 ${
                 selectedCategory === "All"
-                  ? "bg-foreground text-background border-foreground shadow-md hover:bg-foreground/90"
+                  ? "bg-black text-white border-black shadow-md hover:bg-gray-800"
                   : "bg-background text-foreground border-border hover:border-foreground hover:bg-accent hover:text-accent-foreground"
               }`}
             >
@@ -1117,7 +1117,7 @@ const Index = () => {
                 onClick={() => handleCategorySelect(category)}
                 className={`px-4 py-2 text-sm font-medium whitespace-nowrap transition-all duration-200 rounded-full border flex-shrink-0 ${
                   selectedCategory === category
-                    ? "bg-foreground text-background border-foreground shadow-md hover:bg-foreground/90"
+                    ? "bg-black text-white border-black shadow-md hover:bg-gray-800"
                     : "bg-background text-foreground border-border hover:border-foreground hover:bg-accent hover:text-accent-foreground"
                 }`}
               >
@@ -1156,6 +1156,7 @@ const Index = () => {
             <ProductGrid 
               products={filteredProducts}
               wishlist={wishlist}
+              cartItems={cartItems}
               onProductClick={handleProductClick}
               onToggleWishlist={toggleWishlist}
               onAddToCart={addToCart}

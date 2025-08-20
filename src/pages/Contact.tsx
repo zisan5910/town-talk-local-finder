@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { ArrowLeft, Send, Phone } from "lucide-react";
+import { ArrowLeft, Send, Phone, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -164,11 +163,20 @@ const Contact = ({ onBack, onHomeClick, onSearchClick, onCartClick, cartCount }:
 
           <Button
             variant="outline"
-            className="w-full"
+            className="w-full mb-4"
             onClick={() => window.open('tel:+8809638845910', '_self')}
           >
             <Phone className="h-4 w-4 mr-2" />
             Call +8809638845910
+          </Button>
+
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => window.open('https://www.facebook.com/netlistore', '_blank')}
+          >
+            <Facebook className="h-4 w-4 mr-2" />
+            Visit Facebook Page
           </Button>
         </div>
       </div>
